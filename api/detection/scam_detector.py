@@ -2,7 +2,7 @@ from typing import Dict
 
 
 SCAM_KEYWORDS = {
-    "urgency": ["urgent", "immediately", "asap", "now"],
+    "urgency": ["urgent", "immediately", "immediate","asap", "now"],
     "account_threat": ["blocked", "suspended", "limited", "frozen"],
     "payment": ["pay", "payment", "upi", "bank", "transfer"],
     "authority": ["bank", "officer", "support", "kyc", "verification"],
@@ -55,5 +55,5 @@ class ScamDetector:
         for k, v in signals.items():
             score += weights.get(k, 0) * v
 
-        return min(score, 1.0)
+        return min(score, 0.5)
 

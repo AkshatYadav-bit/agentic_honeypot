@@ -13,7 +13,8 @@ class AgentOrchestrator:
         persona = select_persona(session)
 
         # Generate reply text
-        reply = self.responder.generate(decision["next_action"])
+        reply = self.responder.generate(decision["next_action"], session)
+
 
         return {
             "reply": reply,

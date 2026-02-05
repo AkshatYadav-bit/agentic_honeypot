@@ -7,6 +7,9 @@ class SessionState:
         self.session_id = session_id
         self.start_time = time.time()
         self.last_updated = time.time()
+        
+        self.used_replies = set()
+        self.final_callback_sent = False
 
         # Conversation memory
         self.messages: List[Dict] = []

@@ -41,9 +41,21 @@ TEMPLATES = {
 
 
 class Responder:
-    def generate(self, action: str) -> str:
-        options = TEMPLATES.get(action)
+    def generate(self, action: str, session) -> str:
+        options = TEMPLATES.get(action, [])
         if not options:
             return "I’m not sure what to do. Can you help?"
 
-        return random.choice(options)
+        # Avoid repeating replies
+        unused = [o for o in options if o not in session.used_replies]
+
+        if not unused:
+            # Reset memory if all used
+            session.used_replies.clear()
+            unused = options
+
+        reply = random.choice(unused)
+        session.used_replies.add(reply)
+
+        return reply
+
