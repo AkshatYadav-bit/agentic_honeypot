@@ -37,19 +37,31 @@ def handle_message(
     data: MessageRequest,
     _: str = Depends(verify_api_key)
 ):
-    # ---- Session ----
-    session = session_store.get_or_create(data.session_id)
+    
+    # ---- Normalize session ID ----
+    session_id = data.session_id or data.sessionId
+    if not session_id:
+        raise ValueError("Missing session id")
 
-    # ---- Store incoming scammer message ----
-    session.add_message("scammer", data.message)
+    # ---- Normalize message text ----
+    # ---- Normalize message text (ALWAYS defined) ----
+    raw_message = data.message
+
+    if isinstance(raw_message, str):
+        message_text = raw_message
+    else:
+        message_text = raw_message.text
+        
+    session = session_store.get_or_create(session_id)
+    session.add_message("scammer", message_text)
 
     # ---- Scam detection ----
-    signals = detector.analyze(data.message)
+    signals = detector.analyze(message_text)
     score = detector.score(signals)
     session.scam_confidence = max(session.scam_confidence, score)
 
     # ---- Intelligence extraction ----
-    extracted = extractor.extract(data.message)
+    extracted = extractor.extract(message_text)
     extractor.merge_into_session(session, extracted)
 
     # ---- Escalate scam confidence based on extracted intelligence ----

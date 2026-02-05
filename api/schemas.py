@@ -1,10 +1,30 @@
 from pydantic import BaseModel
-from typing import Dict, List, Any
+from typing import Optional, List, Dict, Any, Union
+
+
+class NestedMessage(BaseModel):
+    sender: Optional[str] = "scammer"
+    text: str
+    timestamp: Optional[int] = None
+
+
+class HistoryMessage(BaseModel):
+    sender: str
+    text: str
+    timestamp: Optional[int] = None
 
 
 class MessageRequest(BaseModel):
-    session_id: str
-    message: str
+    # Support BOTH styles
+    session_id: Optional[str] = None     # old
+    sessionId: Optional[str] = None      # new (GUVI)
+
+    # message can be string OR object
+    message: Union[str, NestedMessage]
+
+    # Optional GUVI fields
+    conversationHistory: Optional[List[HistoryMessage]] = []
+    metadata: Optional[Dict[str, Any]] = {}
 
 
 class IntelligenceItem(BaseModel):
