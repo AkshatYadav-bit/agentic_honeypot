@@ -9,6 +9,8 @@ class SessionState:
         self.last_updated = time.time()
         
         self.used_replies = set()
+        self.action_counters = {} 
+        
         self.final_callback_sent = False
 
         # Conversation memory

@@ -37,7 +37,7 @@ class DialoguePolicy:
             return {
                 "goal": "confirm_details",
                 "strategy": "anxious_user",
-                "next_action": "ask_to_repeat_details"
+                "next_action":  "ask_to_confirm_details"
             }
 
         # Fallback
